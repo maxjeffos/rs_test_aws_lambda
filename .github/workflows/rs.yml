@@ -1,0 +1,38 @@
+name: Build Rust AWS Lambda
+
+on: [push]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Show environment
+      run: cargo --version
+
+    - name: Run checks
+      run: cargo fmt -- --check
+      
+    - name: Run tests
+      run: cargo test --verbose
+
+    - name: Build
+      run: cargo build --release --target x86_64-unknown-linux-musl
+
+    - name: Create `.bootstrap` executable
+      run: cp ./target/x86_64-unknown-linux-musl/release/rs_test_aws_lambda ./bootstrap
+      
+    - name: Make deployment package .zip file
+      run: |
+        zip lambda.zip bootstrap
+        ls -la
+
+    - name: Archive deployment package
+      uses: actions/upload-artifact@v2
+      with:
+        name: lambda.zip
+        path: ./lambda.zip
