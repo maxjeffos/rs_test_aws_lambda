@@ -34,6 +34,13 @@ jobs:
         zip lambda.zip bootstrap
         ls -la
 
+    - name: Update Lambda in AWS
+      run: aws lambda update-function-code --function-name rs_test_aws_lambda --zip-file fileb://./lambda.zip --publish
+      env:
+        AWS_DEFAULT_REGION: ${{secrets.AWS_DEFAULT_REGION}}
+        AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+        AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+
     - name: Archive deployment package
       uses: actions/upload-artifact@v2
       with:
