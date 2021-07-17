@@ -9,7 +9,6 @@ async fn main() -> Result<(), Error> {
 }
 
 async fn func(event: Value, _: Context) -> Result<Value, Error> {
-    let first_name = event["firstName"].as_str().unwrap_or("world");
-
+    let first_name = event["firstName"].as_str().unwrap_or("<default name>");
     Ok(json!({ "message": format!("Hello, {}!", first_name) }))
 }
